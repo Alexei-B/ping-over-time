@@ -1,0 +1,13 @@
+[package]
+name = "pot-cli"
+version = "0.1.0"
+authors = ["Alexei Barnes <alexei.barnes@aveva.com>"]
+edition = "2018"
+
+[[bin]]
+name = "pot"
+path = "src/main.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
