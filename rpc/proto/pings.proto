@@ -1,9 +1,9 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
-package pot;
+package pings;
 
-service PotService {
+service PingsService {
     rpc GetPings (PingsRequest) returns (Pings);
 }
 
@@ -19,6 +19,6 @@ message Pings {
 }
 
 message Ping {
-    google.protobuf.Timestamp when = 1;
+    google.protobuf.Timestamp time = 1;
     google.protobuf.Duration duration = 2;
 }

@@ -9,7 +9,7 @@ build = "build.rs"
 
 [dependencies]
 prost = "0.7.0"
-tokio = "1.2.0"
+prost-types = "0.7.0"
 tonic = "0.4.0"
 
 [build-dependencies]
