@@ -8,8 +8,8 @@ service PotService {
 }
 
 message PingsRequest {
-    google.protobuf.Timestamp start = 1;
-    google.protobuf.Timestamp end = 2;
+    google.protobuf.Timestamp since = 1;
+    google.protobuf.Timestamp until = 2;
 }
 
 message Pings {
