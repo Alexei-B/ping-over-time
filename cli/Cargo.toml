@@ -3,6 +3,7 @@ name = "pot-cli"
 version = "0.1.0"
 authors = ["Alexei Barnes <alexei.barnes@aveva.com>"]
 edition = "2018"
+build = "build.rs"
 
 [[bin]]
 name = "pot"
@@ -11,3 +12,7 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+structopt = "0.3.21"
+
+[build-dependencies]
+vergen = { version = "4", features = ["build", "git"] }
