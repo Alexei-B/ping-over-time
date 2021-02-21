@@ -605,6 +605,7 @@ version = "0.1.0"
 dependencies = [
  "pot-rpc",
  "tokio",
+ "tonic",
 ]
 
 [[package]]
