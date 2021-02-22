@@ -1,6 +1,19 @@
-use pot_rpc::{self, PingsServiceServer, PingsRequest, Pings, Ping};
+mod ping;
+mod state;
+
+use std::io;
 use std::time::{Duration, SystemTime};
+
+use pot_rpc::{self, Ping, Pings, PingsRequest, PingsServiceServer};
+use thiserror::Error;
 use tonic::{transport::Server, Request, Response, Status};
+
+// Errors that can occur while pinging a server
+#[derive(Debug, Error)]
+pub enum Error {
+    #[error("error resolving hostname `{0}`")]
+    Dns(String, #[source] Option<io::Error>),
+}
 
 #[derive(Debug, Default)]
 pub struct PingsService {}
