@@ -11,8 +11,6 @@ impl pot_rpc::PingsService for PingsService {
         println!("Got a request: {:?}", request);
 
         let reply = Pings {
-            ip: "0.0.0.0".into(),
-            domain: "localhost".into(),
             pings: vec![Ping {
                 time: Some(SystemTime::now().into()),
                 duration: Some(Duration::from_millis(8).into()),

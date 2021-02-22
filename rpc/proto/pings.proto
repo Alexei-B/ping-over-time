@@ -8,13 +8,13 @@ service PingsService {
 }
 
 message PingsRequest {
-    google.protobuf.Timestamp since = 1;
-    google.protobuf.Timestamp until = 2;
+    string ip = 1;
+    string domain = 2;
+    google.protobuf.Timestamp since = 3;
+    google.protobuf.Timestamp until = 4;
 }
 
 message Pings {
-    string ip = 1;
-    string domain = 2;
     repeated Ping pings = 3;
 }
 
