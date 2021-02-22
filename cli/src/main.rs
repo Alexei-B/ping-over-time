@@ -1,4 +1,5 @@
 use structopt::StructOpt;
+mod plot;
 
 const VERSION: &str = concat!(
     env!("CARGO_PKG_VERSION"),
@@ -18,6 +19,5 @@ pub struct Args {}
 
 fn main() {
     let _args = Args::from_args();
-
-    println!("Hello, world!");
+    plot::Plot::run();
 }
