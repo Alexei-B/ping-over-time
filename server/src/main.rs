@@ -12,10 +12,20 @@ impl pot_rpc::PingsService for PingsService {
 
         let reply = Pings {
             ip: "1.2.3.4".to_owned(),
-            pings: vec![Ping {
-                time: Some(SystemTime::now().into()),
-                duration: Some(Duration::from_millis(8).into()),
-            }]
+            pings: vec![
+                Ping {
+                    time: Some(SystemTime::now().into()),
+                    duration: Some(Duration::from_millis(8).into()),
+                },
+                Ping {
+                    time: Some((SystemTime::now() - Duration::from_secs(5)).into()),
+                    duration: Some(Duration::from_millis(22).into()),
+                },
+                Ping {
+                    time: Some((SystemTime::now() - Duration::from_secs(10)).into()),
+                    duration: Some(Duration::from_millis(12).into()),
+                }
+            ]
             .into(),
         };
 

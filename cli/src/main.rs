@@ -17,7 +17,8 @@ const VERSION: &str = concat!(
 )]
 pub struct Args {}
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let _args = Args::from_args();
-    plot::Plot::run();
+    plot::Plot::run().await.unwrap();
 }

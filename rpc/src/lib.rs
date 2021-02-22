@@ -1,4 +1,5 @@
 pub use pings_rpc::pings_service_server::{PingsService, PingsServiceServer};
+pub use pings_rpc::pings_service_client::{PingsServiceClient};
 pub use pings_rpc::{Ping, Pings, PingsRequest};
 
 pub mod pings_rpc {
