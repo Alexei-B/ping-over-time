@@ -20,7 +20,6 @@ pub async fn ping(addr: String, state: Weak<RwLock<Vec<Ping>>>) -> Result<(), Er
             let time = SystemTime::now();
 
             let pinger = pinger.clone();
-            let state = state.clone();
 
             tokio::spawn(async move {
                 match pinger.send(dst, buffer).await.result {
