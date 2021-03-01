@@ -1,29 +1,35 @@
-use std::{
-    collections::HashMap,
-    net::SocketAddr,
-    time::{Duration, Instant},
-};
+use std::sync::Arc;
 
-use tokio::sync::watch;
-use tokio::task;
+use dashmap::DashMap;
+use tokio::sync::RwLock;
 
-/// Tracks state of all the servers we are pinging to.
+use pot_rpc::Ping;
+
+use crate::{Error, ping::ping};
+
+/// Tracks state of all the servers we are pinging.
+#[derive(Debug, Default)]
 pub struct PingState {
-    // TODO use a good concurrent hashmap
-    servers: HashMap<String, ServerState>,
+    servers: DashMap<String, ServerState>,
 }
 
+#[derive(Debug)]
 struct ServerState {
-    receiver: watch::Receiver<() /*Some type*/>,
-    task: task::JoinHandle<()>,
-}
-
-struct PingResponse {
-    pub ips: Vec<SocketAddr>,
-    pub start: Instant,
-    pub duration: Duration,
+    history: Arc<RwLock<Vec<Ping>>>,
 }
 
 impl PingState {
-    // pub fn get(string: )
+    pub async fn get(&self, addr: &str) -> Result<Arc<RwLock<Vec<Ping>>>, Error> {
+        if let Some(state) = self.servers.get(addr) {
+            return Ok(state.history.clone());
+        }
+
+        let history = Default::default();
+        ping(addr.to_owned(), Arc::downgrade(&history)).await?;
+        self.servers.insert(addr.to_owned(), ServerState {
+            history: history.clone()
+        });
+
+        Ok(history)
+    }
 }

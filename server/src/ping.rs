@@ -1,30 +1,51 @@
-use std::{
-    io,
-    net::IpAddr,
-    str::FromStr,
-    time::{Duration, Instant},
-};
+use std::{net::IpAddr, str::FromStr, sync::Weak, time::SystemTime};
 
-use tokio::task;
+use tokio::{sync::RwLock, task::{self}, time::{Instant, Duration}};
+use pot_rpc::{self, Ping};
+use winping::{AsyncPinger, Buffer};
 
 use crate::Error;
 
-pub struct Pinger {
-    // todo steal code from https://docs.rs/surge-ping/0.1.8/src/surge_ping/ping.rs.html#58-65
-}
+pub async fn ping(addr: String, state: Weak<RwLock<Vec<Ping>>>) -> Result<(), Error> {
+    let start = Instant::now();
+    let mut intervals = 1;
 
-pub struct Response {
-    ips: IpAddr,
-    time: Instant,
-    duration: Duration,
-}
+    let pinger = AsyncPinger::new();
 
-impl Pinger {
-    pub async fn new(addr: String) -> Result<Self, Error> {
-        let ip_addr = resolve_address(addr).await?;
+    let dst = resolve_address(addr).await?;
 
-        todo!()
-    }
+    tokio::spawn(async move {
+        while let Some(state) = state.upgrade() {
+            let buffer = Buffer::new();
+            let time = SystemTime::now();
+
+            let pinger = pinger.clone();
+            let state = state.clone();
+
+            tokio::spawn(async move {
+                match pinger.send(dst, buffer).await.result {
+                    Err(err) => {
+                        log::error!("{}", err);
+                        state.write().await.push(Ping {
+                            time: Some(time.into()),
+                            duration: Some(Duration::from_secs(30).into())
+                        });
+                    },
+                    Ok(rtt) => {
+                        state.write().await.push(Ping {
+                            time: Some(time.into()),
+                            duration: Some(Duration::from_millis(rtt as u64).into())
+                        });
+                    }
+                };
+            });
+
+            tokio::time::sleep_until(start + Duration::from_secs(intervals)).await;
+            intervals += 1;
+        }
+    });
+
+    Ok(())
 }
 
 async fn resolve_address(addr: String) -> Result<IpAddr, Error> {
